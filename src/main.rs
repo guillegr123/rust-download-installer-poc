@@ -5,38 +5,14 @@ use std::thread;
 use std::env;
 
 fn main() {
-    let html_content = format!(
-        r#"
-		<!doctype html>
-		<html>
-			<head>
-				{styles}
-			</head>
-            <body>
-                {scripts}
-                <div class="page_wrap">
-                    <div id="progress_bar" class="meter red">
-                        <span style="width: 100%"></span>
-                    </div>
-                    <div>
-                        <button id="btn_install">Install</button>
-                    </div>
-                </div>
-			</body>
-		</html>
-		"#,
-        styles = inline_style(include_str!("styles.css")),
-        scripts = inline_script(include_str!("app.js")),
-    );
-	
     web_view::builder()
         .title("Installer")
-        .content(Content::Html(html_content))
+        .content(Content::Url("https://www.google.com"))
         .size(480, 200)
         .resizable(false)
         .debug(true)
         .user_data(())
-        .invoke_handler(|webview, arg| {
+        .invoke_handler(|_webview, arg| {
             {
                 match arg {
                     "install" => {
@@ -67,14 +43,6 @@ fn main() {
         })
         .run()
         .unwrap();
-}
-
-fn inline_style(s: &str) -> String {
-    format!(r#"<style type="text/css">{}</style>"#, s)
-}
-
-fn inline_script(s: &str) -> String {
-    format!(r#"<script type="text/javascript">{}</script>"#, s)
 }
 
 fn expensive_computation() {
